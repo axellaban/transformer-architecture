@@ -31,18 +31,18 @@ OUTPUT = ROOT / "dist" / "assets" / "narracion-es.mp3"
 # se escriben tal y como deben sonar en español ("Dípsik" = DeepSeek, "fid fórward"
 # = feed-forward), porque Piper los pronuncia con reglas españolas.
 LINES = {
-    "workload": "Dos arquitecturas frente a frente: doce capas en el original y cuarenta en Dípsik.",
+    "workload": "Dos arquitecturas frente a frente: doce capas en el Transformer original y cuarenta en Dípsik.",
     "attention": "La atención lo cambia todo. El original la calcula densa; Dípsik elige quinientas doce entradas globales y una ventana local de ciento veintiocho tokens.",
     "reuse": "Y reutiliza: pocas capas calculan caché nueva, el resto comparte claves y valores, y algunas recalculan índices.",
     "experts": "El fid fórward denso deja paso a los expertos: Dípsik activa seis de trescientos ochenta y cuatro, más uno compartido.",
-    "residuals": "Los residuos pasan de un solo flujo a cuatro en paralelo.",
-    "engram": "Aparece Engram: dos módulos de memoria aprendida, aparte de la caché del contexto.",
-    "vision": "También entra la visión: treinta y dos capas convierten parches de imagen en posiciones del modelo de lenguaje.",
-    "drafting": "Al final, ambos predicen el siguiente token. Dípsik propone cinco de golpe y luego los verifica.",
+    "residuals": "Y los residuos pasan de un único flujo con suma y norma a cuatro en paralelo.",
+    "engram": "Aparece Engram: dos módulos de memoria aprendida, con ciento noventa y seis mil millones de parámetros propios.",
+    "vision": "Entra la visión: treinta y dos capas convierten parches de imagen en posiciones del modelo de lenguaje.",
+    "drafting": "Al final, ambos predicen el siguiente token; pero Dípsik propone cinco de golpe y después los verifica.",
 }
 
-LEAD_IN = 0.20          # silencio antes de cada línea, dentro de su capítulo
-TAIL = 0.40             # aire que se reserva al final de cada capítulo
+LEAD_IN = 0.15          # silencio antes de cada línea, dentro de su capítulo
+TAIL = 0.20             # aire que se reserva al final de cada capítulo
 MIN_LENGTH_SCALE = 0.80  # límite de aceleración para que la voz siga sonando natural
 
 
@@ -112,10 +112,10 @@ def main():
 
             # Acelera lo justo para que la línea entre en su capítulo. La relación
             # entre length_scale y duración no es exacta, así que se afina iterando.
-            for _ in range(4):
+            for _ in range(8):
                 if spoken <= budget or length_scale <= MIN_LENGTH_SCALE:
                     break
-                length_scale = max(MIN_LENGTH_SCALE, length_scale * budget / spoken * 0.99)
+                length_scale = max(MIN_LENGTH_SCALE, length_scale * budget / spoken * 0.98)
                 synthesize(text, voice, length_scale, raw)
                 trim_silence(raw, clip)
                 spoken = duration_of(clip)

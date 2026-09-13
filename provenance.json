@@ -59,10 +59,10 @@
       "language": "es",
       "duration_seconds": 60.03,
       "bytes": 480562,
-      "sha256": "cb8c95e29fc3445b5a66fc878d58ba3ae4870bff69380e93eac132a3794b3ca2",
+      "sha256": "f29ea2d0c35ccfa726b7b2daf62bb03f9bede9e52c02960e135a6f1f993a6ea2",
       "voice": "Piper es_MX-claude-high",
       "built_by": "scripts/build_narration.py",
-      "alignment": "One line per chapter, each starting at its chapter time on the same 60 second story clock."
+      "alignment": "One line per chapter, each starting at its chapter time on the same 60 second story clock. Lines fill their chapter so silence between them stays under one second."
     }
   },
   "validation": {

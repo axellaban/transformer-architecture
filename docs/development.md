@@ -33,7 +33,7 @@ tar xjf voz.tar.bz2
 python3 scripts/build_narration.py --voice vits-piper-es_MX-claude-high/es_MX-claude-high.onnx
 ```
 
-El guion está en `LINES`, dentro del propio script: una línea por capítulo, en el mismo orden que `story.mjs`. El script sintetiza cada línea, la acelera lo justo para que entre en su capítulo (nunca por encima de 1,25×) y las mezcla sobre una pista de 60 segundos. Si una línea no cabe ni al máximo de velocidad, el script falla y pide acortar el texto en lugar de dejar que se solape con el capítulo siguiente. Hace falta `ffmpeg` en el PATH.
+El guion está en `LINES`, dentro del propio script: una línea por capítulo, en el mismo orden que `story.mjs`. El script sintetiza cada línea, la acelera lo justo para que entre en su capítulo (nunca por encima de 1,25×) y las mezcla sobre una pista de 60 segundos. Escribe líneas que llenen su capítulo: si quedan cortas, la narración suena entrecortada por el silencio entre ellas. Si una línea no cabe ni al máximo de velocidad, el script falla y pide acortar el texto en lugar de dejar que se solape con el capítulo siguiente. Hace falta `ffmpeg` en el PATH.
 
 Los términos en inglés se escriben en `LINES` tal como deben sonar en español (`Dípsik`, `fid fórward`), porque Piper los pronuncia con reglas del español.
 
