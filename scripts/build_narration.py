@@ -31,14 +31,14 @@ OUTPUT = ROOT / "dist" / "assets" / "narracion-es.mp3"
 # se escriben tal y como deben sonar en español ("Dípsik" = DeepSeek, "fid fórward"
 # = feed-forward), porque Piper los pronuncia con reglas españolas.
 LINES = {
-    "workload": "Dos arquitecturas frente a frente: doce capas en el Transformer original y cuarenta en Dípsik.",
-    "attention": "La atención lo cambia todo. El original la calcula densa; Dípsik elige quinientas doce entradas globales y una ventana local de ciento veintiocho tokens.",
-    "reuse": "Y reutiliza: pocas capas calculan caché nueva, el resto comparte claves y valores, y algunas recalculan índices.",
-    "experts": "El fid fórward denso deja paso a los expertos: Dípsik activa seis de trescientos ochenta y cuatro, más uno compartido.",
-    "residuals": "Y los residuos pasan de un único flujo normalizado a cuatro flujos en paralelo.",
-    "engram": "Aparece Engram: dos módulos de memoria aprendida, con ciento noventa y seis mil millones de parámetros guardados aparte.",
-    "vision": "Entra también la visión: treinta y dos capas convierten parches de imagen en posiciones del modelo de lenguaje.",
-    "drafting": "Al final, ambos predicen el siguiente token; pero Dípsik propone cinco de golpe y después los verifica.",
+    "workload": "Nueve años separan estas dos arquitecturas: el mismo diseño, pero mucho más profundo.",
+    "attention": "En el original, cada palabra mira a todas las demás, y eso se encarece cuando el texto crece. Dípsik mira solo lo que importa, sin perder lo reciente.",
+    "reuse": "Y no repite trabajo: unas pocas capas construyen la memoria y las demás la reutilizan. Recuerda mucho más y gasta menos.",
+    "experts": "Antes toda la red trabajaba en cada palabra. Ahora hay cientos de expertos y solo se activan unos pocos.",
+    "residuals": "La información ya no viaja por un carril, sino por cuatro en paralelo.",
+    "engram": "Además suma una memoria propia, aprendida durante el entrenamiento, que guarda conocimiento aparte de la conversación.",
+    "vision": "Y ya no solo lee: también ve. Las imágenes entran troceadas y se traducen a su lenguaje interno.",
+    "drafting": "Los dos predicen la siguiente palabra. Pero Dípsik se adelanta: escribe varias de una vez y las revisa.",
 }
 
 LEAD_IN = 0.15          # silencio antes de cada línea, dentro de su capítulo

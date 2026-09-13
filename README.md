@@ -12,7 +12,7 @@ Construido con **GPT-6-Astra** en Codex. Interfaz y narración en español.
 
 - **Mira la arquitectura completa.** Los dos modelos siguen la estructura de sus artículos, con rutas animadas que conectan los componentes.
 - **Asómate dentro.** Haz clic en un componente o acércate a él para ver cabezas de atención, enrutado de expertos, flujos residuales y memoria.
-- **Escucha la historia.** Un recorrido de cámara de 60 segundos, **con narración en español**, compara atención, reutilización, expertos, memoria, visión y borradores. Puedes silenciarla con el botón del altavoz.
+- **Escucha la historia.** Un recorrido de cámara de 60 segundos, **con narración en español**, recorre la evolución del diseño: atención, reutilización de memoria, expertos, memoria aprendida, visión y borradores. La voz explica la idea en lenguaje llano y los textos en pantalla dan la cifra exacta. Puedes silenciarla con el botón del altavoz.
 - **Cambia el contexto.** Ajusta el número de tokens para explorar las ilustraciones de tráfico y caché. Pausa o ralentiza la animación cuando quieras.
 
 ![Un primer plano que compara la atención en las dos arquitecturas](docs/screenshots/attention.png)

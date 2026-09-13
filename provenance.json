@@ -59,10 +59,11 @@
       "language": "es",
       "duration_seconds": 60.03,
       "bytes": 480562,
-      "sha256": "8f98683f598683fe41ac80ed54ef136540c667e4521761ef81895a2690dfed51",
+      "sha256": "df31ea3e40a18b5b6f316c274755965be6ef536e9c5f4fbcb8880519dc55c44b",
       "voice": "Piper es_MX-claude-high",
       "built_by": "scripts/build_narration.py",
-      "alignment": "One line per chapter, each starting at its chapter time on the same 60 second story clock. Lines fill their chapter, so silence between them stays between 0.5 and 0.8 seconds."
+      "alignment": "One line per chapter, each starting at its chapter time on the same 60 second story clock. Lines fill their chapter, so silence between them stays between 0.5 and 0.8 seconds.",
+      "register": "Plain-language teaching voice: it explains what each change is for. The on-screen captions carry the exact figures, so the two layers complement each other."
     }
   },
   "validation": {
