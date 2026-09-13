@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Explore the original Transformer and DeepSeek V4.1 Flash in interactive 3D.",
+  "description": "Explora el Transformer original y DeepSeek V4.1 Flash en 3D interactivo, con narración en español.",
   "license": "MIT",
   "scripts": {
     "test": "node tests/architecture.mjs && node tests/story.mjs"

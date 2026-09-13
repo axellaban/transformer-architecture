@@ -1,37 +1,37 @@
-// One continuous comparison. Every beat is a short, source-grounded visual idea.
+// Una única comparación continua. Cada momento es una idea visual breve y respaldada por las fuentes.
 export const chapters = [
-  {id:'workload',name:'The task',title:'Architecture',duration:6,cues:[
-    {at:0,overview:true,targets:[null,null],caption:'Original: 6 encoder + 6 decoder layers. V4.1: 20 causal encoder + 20 decoder layers.'},
-    {at:3,targets:['encoder_attention','encoder_full'],title:'Encoder attention',caption:'Original encoder: bidirectional attention. V4.1 encoder: causal attention.'}
+  {id:'workload',name:'La tarea',title:'Arquitectura',duration:6,cues:[
+    {at:0,overview:true,targets:[null,null],caption:'Original: 6 capas de codificador + 6 de decodificador. V4.1: 20 de codificador causal + 20 de decodificador.'},
+    {at:3,targets:['encoder_attention','encoder_full'],title:'Atención del codificador',caption:'Codificador original: atención bidireccional. Codificador de V4.1: atención causal.'}
   ]},
-  {id:'attention',name:'Attention',title:'Decoder attention',duration:10,cues:[
-    {at:0,targets:['decoder_attention','decoder_full'],caption:'Original: dense causal attention. V4.1: sparse global attention plus local attention.'},
-    {at:4,targets:['decoder_attention','candidate_pool'],title:'Global retrieval',caption:'V4.1: up to 512 selected global entries. Original: no retrieval index.'},
-    {at:7,targets:['decoder_attention','decoder_full'],title:'Local attention',caption:'V4.1: 128-token local window. Original: attention over preceding target positions.'}
+  {id:'attention',name:'Atención',title:'Atención del decodificador',duration:10,cues:[
+    {at:0,targets:['decoder_attention','decoder_full'],caption:'Original: atención causal densa. V4.1: atención global dispersa más atención local.'},
+    {at:4,targets:['decoder_attention','candidate_pool'],title:'Recuperación global',caption:'V4.1: hasta 512 entradas globales seleccionadas. Original: sin índice de recuperación.'},
+    {at:7,targets:['decoder_attention','decoder_full'],title:'Atención local',caption:'V4.1: ventana local de 128 tokens. Original: atención sobre las posiciones anteriores del objetivo.'}
   ]},
-  {id:'reuse',name:'Reuse',title:'Attention memory',duration:9,cues:[
-    {at:0,targets:['decoder_cross','decoder_full'],title:'Full layers',caption:'Original: separate K/V projections per decoder layer. V4.1 Full: new global K/V and indices.'},
-    {at:3,targets:['decoder_cross','decoder_reuse_first_node'],title:'Reuse layers',caption:'Original: per-layer K/V. V4.1 Reuse: shared global K/V and retrieval indices.'},
-    {at:6,targets:['decoder_cross','decoder_reindex'],title:'Reindex layers',caption:'V4.1 Reindex reuses global K/V and recomputes retrieval indices.'}
+  {id:'reuse',name:'Reutilización',title:'Memoria de atención',duration:9,cues:[
+    {at:0,targets:['decoder_cross','decoder_full'],title:'Capas Full',caption:'Original: proyecciones K/V propias en cada capa del decodificador. V4.1 Full: K/V global e índices nuevos.'},
+    {at:3,targets:['decoder_cross','decoder_reuse_first_node'],title:'Capas Reuse',caption:'Original: K/V por capa. V4.1 Reuse: K/V global e índices de recuperación compartidos.'},
+    {at:6,targets:['decoder_cross','decoder_reindex'],title:'Capas Reindex',caption:'V4.1 Reindex reutiliza el K/V global y recalcula los índices de recuperación.'}
   ]},
-  {id:'experts',name:'Experts',title:'Feed-forward layers',duration:8,cues:[
-    {at:0,targets:['encoder_ffn','encoder_moe_full'],caption:'Original: 2,048-unit dense layer. V4.1: 384 routed experts and one shared expert.'},
-    {at:4,targets:['encoder_ffn','encoder_moe_full'],closer:true,title:'Expert activation',caption:'Original: dense computation. V4.1: 6 routed + 1 shared expert per token.'}
+  {id:'experts',name:'Expertos',title:'Capas feed-forward',duration:8,cues:[
+    {at:0,targets:['encoder_ffn','encoder_moe_full'],caption:'Original: capa densa de 2.048 unidades. V4.1: 384 expertos enrutados y un experto compartido.'},
+    {at:4,targets:['encoder_ffn','encoder_moe_full'],closer:true,title:'Activación de expertos',caption:'Original: cómputo denso. V4.1: 6 expertos enrutados + 1 compartido por token.'}
   ]},
-  {id:'residuals',name:'Residual paths',title:'Residual connections',duration:5,cues:[
-    {at:0,targets:['encoder_norm1','embedding'],caption:'Original: one residual stream with Add & Norm. V4.1: four streams with Single-Pass mHC.'}
+  {id:'residuals',name:'Rutas residuales',title:'Conexiones residuales',duration:5,cues:[
+    {at:0,targets:['encoder_norm1','embedding'],caption:'Original: un único flujo residual con Add & Norm. V4.1: cuatro flujos con Single-Pass mHC.'}
   ]},
-  {id:'engram',name:'Learned memory',title:'Engram memory',duration:8,cues:[
-    {at:0,targets:[null,'engram'],caption:'V4.1 only: two learned lookup modules, with 196B parameters in total.'},
-    {at:4,targets:[null,'kv_label'],title:'Global KV cache',caption:'V4.1 global KV stores the current context. Engram stores learned parameters.'}
+  {id:'engram',name:'Memoria aprendida',title:'Memoria Engram',duration:8,cues:[
+    {at:0,targets:[null,'engram'],caption:'Solo en V4.1: dos módulos de consulta aprendidos, con 196.000 millones de parámetros en total.'},
+    {at:4,targets:[null,'kv_label'],title:'Caché KV global',caption:'El KV global de V4.1 guarda el contexto actual. Engram guarda parámetros aprendidos.'}
   ]},
-  {id:'vision',name:'Vision',title:'Vision encoder',duration:7,cues:[
-    {at:0,targets:[null,'vision_encoder'],caption:'Original: text input. V4.1: a 32-layer vision encoder for image patches.'},
-    {at:3,targets:[null,'vision_embedding'],title:'Vision projector',caption:'V4.1: 3×3 spatial merging, then a two-layer projector into the language model.'}
+  {id:'vision',name:'Visión',title:'Codificador de visión',duration:7,cues:[
+    {at:0,targets:[null,'vision_encoder'],caption:'Original: entrada de texto. V4.1: un codificador de visión de 32 capas para parches de imagen.'},
+    {at:3,targets:[null,'vision_embedding'],title:'Proyector de visión',caption:'V4.1: fusión espacial 3×3 y después un proyector de dos capas hacia el modelo de lenguaje.'}
   ]},
-  {id:'drafting',name:'Drafting',title:'Next-token output',duration:7,cues:[
-    {at:0,targets:['softmax','target_head'],caption:'Both architectures produce a probability distribution over the next token.'},
-    {at:3,targets:['softmax','dspark'],title:'DSpark drafting',caption:'Original: sequential decoding. V4.1: five-position drafts with backbone verification.'}
+  {id:'drafting',name:'Borradores',title:'Salida del siguiente token',duration:7,cues:[
+    {at:0,targets:['softmax','target_head'],caption:'Ambas arquitecturas producen una distribución de probabilidad sobre el siguiente token.'},
+    {at:3,targets:['softmax','dspark'],title:'Borradores DSpark',caption:'Original: decodificación secuencial. V4.1: borradores de cinco posiciones verificados por el backbone.'}
   ]}
 ];
 let offset=0;

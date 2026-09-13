@@ -33,7 +33,7 @@
       "sha256": "4df5d7c64e8015b826d0d27e3c8357230a66dc6229b2430d83d53c5d7ee6e7ee"
     }
   },
-  "interaction_revision": "Revision 9: Explore by default; optional one-minute story opens with both models side by side and keeps that layout throughout. Continuous camera paths move between 17 short, source-grounded beats without cuts or static holds; chapter navigation glides to its destination.",
+  "interaction_revision": "Revision 10: Spanish interface and narration. Explore by default; the optional one-minute story opens with both models side by side, keeps that layout throughout and plays a 60 second Spanish voice-over that follows the story clock and can be muted. Continuous camera paths move between 17 short, source-grounded beats without cuts or static holds; chapter navigation glides to its destination.",
   "diagram_checks": {
     "original_nodes": 24,
     "original_edges": 30,
@@ -51,12 +51,23 @@
     "default_mode": "Explore",
     "start": "explicit Story mode button only",
     "layout": "Both models stay side by side at every viewport width",
-    "camera": "Shape-preserving cubic paths with continuous position and velocity; 3\u20135 second beats",
+    "camera": "Shape-preserving cubic paths with continuous position and velocity; 3–5 second beats",
     "validation_groups_passed": 6,
-    "captions": "Per-cue component names and factual comparisons of architecture, counts and operations."
+    "captions": "Per-cue component names and factual comparisons of architecture, counts and operations, in Spanish.",
+    "narration": {
+      "file": "dist/assets/narracion-es.mp3",
+      "language": "es",
+      "duration_seconds": 60.03,
+      "bytes": 480562,
+      "sha256": "cb8c95e29fc3445b5a66fc878d58ba3ae4870bff69380e93eac132a3794b3ca2",
+      "voice": "Piper es_MX-claude-high",
+      "built_by": "scripts/build_narration.py",
+      "alignment": "One line per chapter, each starting at its chapter time on the same 60 second story clock."
+    }
   },
   "validation": {
     "command": "npm test",
     "scope": "Architecture invariants and story playback/camera continuity. Illustrative motion, not neural inference or benchmarking."
-  }
+  },
+  "language": "es"
 }

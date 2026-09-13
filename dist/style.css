@@ -19,7 +19,7 @@ dialog{background:#101f2d;color:#d6e5ee;border:1px solid #3b596d;border-radius:1
 @media(max-height:650px) and (min-width:761px){.app-header{height:56px}main{height:calc(100dvh - 56px)}.models{height:66px}.models .year{display:none}.story-panel{min-height:152px;padding-top:12px;padding-bottom:10px;row-gap:6px}.story-copy h2{font-size:20px}.story-copy>p:last-child{font-size:14px;min-height:2.9em}.explore-controls{height:56px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 
-/* The guided story uses the scene itself, with only captions and quiet transport. */
+/* La historia guiada usa la propia escena, solo con los textos y unos controles discretos. */
 .is-story .app-header,.is-story .models{display:none}
 .is-story main{height:100dvh}
 .is-story #scene-wrap:after{content:'';position:absolute;inset:auto 0 0;height:210px;background:linear-gradient(transparent,#0b131ed9 60%,#0b131ef7);pointer-events:none;z-index:8}

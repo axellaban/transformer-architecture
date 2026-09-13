@@ -1,6 +1,6 @@
 import {cues,duration} from './story.mjs';
 
-// Timed, shape-preserving Hermite curves keep position and velocity continuous.
+// Curvas de Hermite temporizadas que preservan la forma y mantienen posición y velocidad continuas.
 function tangent(points,i,key,axis){
   if(i===0||i===points.length-1)return 0;
   const a=points[i-1],b=points[i],c=points[i+1],h0=b.time-a.time,h1=c.time-b.time;
