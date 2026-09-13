@@ -1,4 +1,4 @@
-// Paper-backed structure; deterministic toy patterns are presentation only.
+// Estructura respaldada por los artículos; los patrones deterministas de juguete son solo presentación.
 export function attentionSpec(layer, n, config) {
   const latest = ids => ids.filter(i => i <= layer).at(-1) ?? null;
   const hasGlobal = layer >= 2;
@@ -21,7 +21,7 @@ function illustrativeScore(source,row,column,step){
 export function candidateColumns(spec,row,step){
   const columns=Array.from({length:row+1},(_,i)=>i);
   if(spec.layer<spec.encoderLayers || spec.n*(row+1)/16<=spec.candidateLimit)return columns;
-  // Coarse groups, not a visualization of the numeric compression ratio.
+  // Grupos gruesos, no una visualización de la proporción numérica de compresión.
   return columns.sort((a,b)=>illustrativeScore(spec.encoderLayers,row,b,step)-illustrativeScore(spec.encoderLayers,row,a,step)).slice(0,Math.max(1,Math.ceil(columns.length/2)));
 }
 
@@ -30,8 +30,8 @@ export function accessCell(spec, row, column, step) {
   if (!spec.hasGlobal) return row-column < Math.max(1,Math.ceil(spec.local/spec.n*16));
   const visible = Math.floor(spec.n*(row+1)/16/spec.ratio);
   if (visible <= spec.topk) return true;
-  // Consumers share their producer's map. Deeper decoder indexers stay in
-  // the common candidate pool; Reindex may choose different groups within it.
+  // Los consumidores comparten el mapa de su productor. Los indexadores más profundos del
+  // decodificador se quedan en el conjunto común de candidatos; Reindex puede elegir otros grupos dentro de él.
   const candidates=candidateColumns(spec,row,step);
   const selected=candidates.sort((a,b)=>illustrativeScore(spec.indexSource,row,b,step)-illustrativeScore(spec.indexSource,row,a,step)).slice(0,Math.max(1,Math.ceil((row+1)*.18)));
   return selected.includes(column);

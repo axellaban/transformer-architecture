@@ -1,7 +1,8 @@
-# Third-party notices
+# Avisos de terceros
 
-- **Three.js 0.180.0:** the runtime, OrbitControls, GLTFLoader and BufferGeometryUtils are vendored in `dist/vendor/`. Copyright belongs to the Three.js authors; the original MIT notice is retained in `dist/vendor/LICENSE`.
-- **Attention Is All You Need:** Vaswani et al., 2017. The original Transformer layout is interpreted from Figure 1. The paper is linked, not redistributed. https://arxiv.org/abs/1706.03762
-- **DeepSeek V4.1 Flash:** DeepSeek, 2026. The modern layout and factual configuration come from the technical report and model configuration. `tests/fixtures/deepseek-config.json` is a frozen reference configuration for numerical checks; it is not model weights or executable model code. Original source: https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/config.json
+- **Three.js 0.180.0:** el runtime, OrbitControls, GLTFLoader y BufferGeometryUtils están vendorizados en `dist/vendor/`. Los derechos pertenecen a los autores de Three.js; el aviso MIT original se conserva en `dist/vendor/LICENSE`.
+- **Attention Is All You Need:** Vaswani et al., 2017. La disposición del Transformer original se interpreta a partir de la figura 1. El artículo se enlaza, no se redistribuye. https://arxiv.org/abs/1706.03762
+- **DeepSeek V4.1 Flash:** DeepSeek, 2026. La disposición moderna y la configuración factual vienen del informe técnico y de la configuración del modelo. `tests/fixtures/deepseek-config.json` es una configuración de referencia congelada para las comprobaciones numéricas; no son pesos ni código ejecutable del modelo. Fuente original: https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/config.json
+- **Piper:** la narración `dist/assets/narracion-es.mp3` se sintetizó con [Piper](https://github.com/rhasspy/piper) (MIT) y el modelo de voz `es_MX-claude-high`, entrenado sobre un conjunto de datos con licencia Apache-2.0 (https://huggingface.co/spaces/HirCoir/Piper-TTS-Spanish). El archivo de audio resultante forma parte de este proyecto; el modelo de voz no se redistribuye aquí y se descarga al regenerar el audio.
 
-The project’s MIT license does not relicense the referenced papers, third-party model materials or trademarks. This is an independent educational project.
+La licencia MIT del proyecto no relicencia los artículos referenciados, los materiales de modelos de terceros ni las marcas. Este es un proyecto educativo independiente.
