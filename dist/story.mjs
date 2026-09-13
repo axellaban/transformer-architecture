@@ -15,7 +15,7 @@ export const chapters = [
     {at:6,targets:['decoder_cross','decoder_reindex'],title:'Capas Reindex',caption:'V4.1 Reindex reutiliza el K/V global y recalcula los índices de recuperación.'}
   ]},
   {id:'experts',name:'Expertos',title:'Capas feed-forward',duration:8,cues:[
-    {at:0,targets:['encoder_ffn','encoder_moe_full'],caption:'Original: capa densa de 2.048 unidades. V4.1: 384 expertos enrutados y un experto compartido.'},
+    {at:0,targets:['encoder_ffn','encoder_moe_full'],caption:'Original: capa densa de 2048 unidades. V4.1: 384 expertos enrutados y un experto compartido.'},
     {at:4,targets:['encoder_ffn','encoder_moe_full'],closer:true,title:'Activación de expertos',caption:'Original: cómputo denso. V4.1: 6 expertos enrutados + 1 compartido por token.'}
   ]},
   {id:'residuals',name:'Rutas residuales',title:'Conexiones residuales',duration:5,cues:[

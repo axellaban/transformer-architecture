@@ -35,9 +35,9 @@ LINES = {
     "attention": "La atención lo cambia todo. El original la calcula densa; Dípsik elige quinientas doce entradas globales y una ventana local de ciento veintiocho tokens.",
     "reuse": "Y reutiliza: pocas capas calculan caché nueva, el resto comparte claves y valores, y algunas recalculan índices.",
     "experts": "El fid fórward denso deja paso a los expertos: Dípsik activa seis de trescientos ochenta y cuatro, más uno compartido.",
-    "residuals": "Y los residuos pasan de un único flujo con suma y norma a cuatro en paralelo.",
-    "engram": "Aparece Engram: dos módulos de memoria aprendida, con ciento noventa y seis mil millones de parámetros propios.",
-    "vision": "Entra la visión: treinta y dos capas convierten parches de imagen en posiciones del modelo de lenguaje.",
+    "residuals": "Y los residuos pasan de un único flujo normalizado a cuatro flujos en paralelo.",
+    "engram": "Aparece Engram: dos módulos de memoria aprendida, con ciento noventa y seis mil millones de parámetros guardados aparte.",
+    "vision": "Entra también la visión: treinta y dos capas convierten parches de imagen en posiciones del modelo de lenguaje.",
     "drafting": "Al final, ambos predicen el siguiente token; pero Dípsik propone cinco de golpe y después los verifica.",
 }
 

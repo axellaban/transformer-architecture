@@ -37,6 +37,14 @@ El guion está en `LINES`, dentro del propio script: una línea por capítulo, e
 
 Los términos en inglés se escriben en `LINES` tal como deben sonar en español (`Dípsik`, `fid fórward`), porque Piper los pronuncia con reglas del español.
 
+## Terminología
+
+Se traducen los términos con equivalente asentado en español: codificador, decodificador, autoatención, atención cruzada, atención multicabeza, enmascarada, codificación posicional, cabezas, expertos enrutados, experto compartido, borradores, caché.
+
+Se mantienen en inglés los nombres propios del artículo o del modelo y los términos sin equivalente asentado: `Add & Norm` (etiqueta de la figura 1; su «Norm» es la normalización LayerNorm, no una norma), `embedding`, `token`, `feed-forward`, `softmax`, `backbone`, `prefill`, `logits`, `hash`, `benchmark`, y las siglas y nombres de mecanismo: SWA, MoE, CSA2, Full, Reuse, Reindex, Engram, DSpark, mHC, RoPE, YaRN, SwiGLU, ReLU, LayerNorm.
+
+Los números siguen la convención de `es-ES`, la misma que produce `toLocaleString('es-ES')` en la aplicación: sin separador hasta cuatro cifras (2048, 5120) y con punto a partir de cinco (16.384, 129.280).
+
 ## Comprobaciones
 
 Con Node.js 22 o posterior instalado:
