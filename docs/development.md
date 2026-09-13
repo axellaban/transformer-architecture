@@ -35,6 +35,10 @@ python3 scripts/build_narration.py --voice vits-piper-es_MX-claude-high/es_MX-cl
 
 El guion está en `LINES`, dentro del propio script: una línea por capítulo, en el mismo orden que `story.mjs`. El registro es divulgativo a propósito: la voz explica para qué sirve cada cambio y los textos en pantalla aportan las cifras exactas, de modo que las dos capas se complementan en vez de repetirse. El script sintetiza cada línea, la acelera lo justo para que entre en su capítulo (nunca por encima de 1,25×) y las mezcla sobre una pista de 60 segundos. Escribe líneas que llenen su capítulo: si quedan cortas, la narración suena entrecortada por el silencio entre ellas. Si una línea no cabe ni al máximo de velocidad, el script falla y pide acortar el texto en lugar de dejar que se solape con el capítulo siguiente. Hace falta `ffmpeg` en el PATH.
 
+Al terminar, el script escribe los doce primeros caracteres del hash del audio en la URL que usa `dist/app.js` (`assets/narracion-es.mp3?v=…`). La pista se sirve con caché de siete días, así que si la URL no cambiara al regenerarla los navegadores seguirían reproduciendo la versión vieja durante días. No edites esa URL a mano.
+
+En reproducción, la pista se descarga entera y suena desde memoria: iOS ignora `preload` y descarga mientras reproduce, y cualquier tirón de red corta la narración. La sincronía con el reloj de la historia se mantiene estirando levemente `playbackRate`; solo se reposiciona en los saltos explícitos, porque en iOS cada búsqueda interrumpe el sonido.
+
 Los términos en inglés se escriben en `LINES` tal como deben sonar en español (`Dípsik`, `fid fórward`), porque Piper los pronuncia con reglas del español.
 
 ## Terminología

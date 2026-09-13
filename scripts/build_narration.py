@@ -15,8 +15,8 @@ Requisitos (solo para regenerar el audio, no para ejecutar la app):
 Salida: dist/assets/narracion-es.mp3
 """
 import argparse
+import hashlib
 import json
-import math
 import re
 import subprocess
 import sys
@@ -26,6 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 STORY = ROOT / "dist" / "story.mjs"
 OUTPUT = ROOT / "dist" / "assets" / "narracion-es.mp3"
+APP = ROOT / "dist" / "app.js"
 
 # Una línea por capítulo de story.mjs, en el mismo orden. Los términos en inglés
 # se escriben tal y como deben sonar en español ("Dípsik" = DeepSeek, "fid fórward"
@@ -57,6 +58,22 @@ def chapters_from_story():
         chapters.append({"id": cid, "start": start, "duration": float(duration)})
         start += float(duration)
     return chapters
+
+
+def stamp_version(audio):
+    """Escribe el hash del audio en la URL que usa dist/app.js.
+
+    La pista se sirve con caché larga, así que si la URL no cambia al regenerarla
+    los navegadores siguen reproduciendo la versión vieja durante días.
+    """
+    digest = hashlib.sha256(audio.read_bytes()).hexdigest()[:12]
+    source = APP.read_text(encoding="utf8")
+    updated, count = re.subn(r"(assets/narracion-es\.mp3\?v=)[0-9a-f]+",
+                             lambda m: m.group(1) + digest, source)
+    if count != 1:
+        sys.exit(f"No se encontró la URL de la narración en {APP} (coincidencias: {count})")
+    APP.write_text(updated, encoding="utf8")
+    return digest
 
 
 def duration_of(path):
@@ -147,8 +164,9 @@ def main():
              "-metadata", "title=Transformer original vs DeepSeek — narración",
              "-metadata", "language=spa", str(args.output)], check=True)
 
+    version = stamp_version(Path(args.output)) if Path(args.output) == OUTPUT else None
     print(json.dumps({"salida": args.output, "duracion": round(duration_of(args.output), 2),
-                      "capitulos": report}, ensure_ascii=False, indent=2))
+                      "version": version, "capitulos": report}, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

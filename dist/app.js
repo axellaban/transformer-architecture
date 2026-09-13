@@ -189,34 +189,48 @@ function updateStoryTransport(position=storyPosition(story.clock.time)){
 }
 // Narración en español del recorrido de un minuto. La pista dura lo mismo que la
 // historia, así que basta con seguir el reloj: cada capítulo empieza en su segundo.
-const narration={el:null,on:true,failed:false};
+const narration={el:new Audio(),on:true,failed:false,source:'./assets/narracion-es.mp3?v=b6a3a6591751'};
 try{narration.on=localStorage.getItem('narracion')!=='off'}catch{}
-narration.el=new Audio('./assets/narracion-es.mp3?revision=1');
-narration.el.preload='none';
+narration.el.preload='none';narration.el.src=narration.source;
+if('preservesPitch' in narration.el)narration.el.preservesPitch=true;
 narration.el.addEventListener('error',()=>{narration.failed=true;updateNarrationButton()});
+// Safari en iOS ignora preload y descarga la pista mientras suena, así que un tirón
+// de red la corta a mitad de frase. Se baja entera una vez y se reproduce de memoria.
+async function preloadNarration(){
+ try{
+  const response=await fetch(narration.source);
+  if(!response.ok)return;
+  const url=URL.createObjectURL(await response.blob());
+  if(!story.active){narration.el.src=url;narration.el.load();}
+ }catch{}
+}
 function updateNarrationButton(){
  const button=$('#story-audio'),active=narration.on&&!narration.failed;
  const label=narration.failed?ui.narracionNoDisponible:active?ui.narracionSilenciar:ui.narracionActivar;
  button.innerHTML=icon(active?'sound':'mute');button.setAttribute('aria-label',label);button.title=label;
  button.setAttribute('aria-pressed',String(active));button.disabled=narration.failed;
 }
-function syncNarration(){
+function syncNarration(reposition=false){
  const el=narration.el;if(narration.failed)return;
  if(!story.active||!narration.on){if(!el.paused)el.pause();return;}
- if(Math.abs(el.currentTime-story.clock.time)>.3){try{el.currentTime=story.clock.time}catch{}}
+ // Solo se reposiciona en los saltos explícitos: en iOS cada búsqueda interrumpe el
+ // sonido, así que la deriva pequeña se corrige estirando un poco la velocidad.
+ const drift=story.clock.time-el.currentTime;
+ if(reposition||Math.abs(drift)>1){el.playbackRate=1;try{el.currentTime=story.clock.time}catch{}}
+ else el.playbackRate=Math.min(1.05,Math.max(.95,1+drift*.5));
  const play=story.clock.playing&&!document.hidden&&!$('#source-dialog').open;
  if(play&&el.paused)el.play().catch(()=>{});else if(!play&&!el.paused)el.pause();
 }
-function stopNarration(){if(narration.failed)return;narration.el.pause();try{narration.el.currentTime=0}catch{}}
+function stopNarration(){if(narration.failed)return;narration.el.pause();narration.el.playbackRate=1;try{narration.el.currentTime=0}catch{}}
 function toggleNarration(){
  narration.on=!narration.on;try{localStorage.setItem('narracion',narration.on?'on':'off')}catch{}
- updateNarrationButton();syncNarration();
+ updateNarrationButton();syncNarration(true);
 }
 function startStory(){
  if(!state.ready)return;story.savedContext=state.n;state.n=4096;story.active=true;story.cueKey=null;story.blend=null;transition=null;for(const v of views){v.controls.enabled=false;v.surface.style.pointerEvents='none';}
  document.body.classList.add('is-story');$('#explore-controls').hidden=true;$('#story-panel').hidden=false;
  $('#story-toggle').setAttribute('aria-pressed','true');$('#story-toggle').setAttribute('aria-label',ui.historiaSalir);$('#story-toggle-label').textContent=ui.historiaExplorar;$('#story-duration').hidden=true;
- story.clock.seek(0,performance.now());story.clock.play(performance.now());stopNarration();syncNarration();resize();applyStoryCue(storyPosition(0));updateStoryTransport();
+ story.clock.seek(0,performance.now());story.clock.play(performance.now());stopNarration();syncNarration(true);resize();applyStoryCue(storyPosition(0));updateStoryTransport();
 }
 function stopStory(){
  if(!story.active){home();return;}story.clock.pause(performance.now());story.active=false;stopNarration();story.blend=null;story.resumeAfterDialog=false;state.n=story.savedContext;for(const v of views){v.controls.enabled=true;v.surface.style.pointerEvents='';v.storyWeights=null;}
@@ -226,8 +240,8 @@ function stopStory(){
 }
 function pauseStory(){if(!story.active)return;story.clock.pause(performance.now());syncNarration();updateStoryTransport();}
 function interruptStory(){if(story.active)pauseStory();}
-function toggleStoryPlayback(){if(!story.active)return;if(story.clock.playing)pauseStory();else{const replay=story.clock.time>=storyDuration;if(replay)blendStoryCamera();story.clock.play(performance.now());if(replay)applyStoryCue(storyPosition(0));syncNarration();updateStoryTransport();}}
-function seekStory(time){blendStoryCamera();const p=story.clock.seek(time,performance.now());applyStoryCue(p);syncNarration();updateStoryTransport(p);}
+function toggleStoryPlayback(){if(!story.active)return;if(story.clock.playing)pauseStory();else{const replay=story.clock.time>=storyDuration;if(replay)blendStoryCamera();story.clock.play(performance.now());if(replay)applyStoryCue(storyPosition(0));syncNarration(replay);updateStoryTransport();}}
+function seekStory(time){blendStoryCamera();const p=story.clock.seek(time,performance.now());applyStoryCue(p);syncNarration(true);updateStoryTransport(p);}
 function nextChapter(){const p=storyPosition(story.clock.time);seekStory(chapters[p.index+1]?.start??storyDuration);}
 function previousChapter(){const p=storyPosition(story.clock.time);seekStory(p.local>2?p.chapter.start:chapters[Math.max(0,p.index-1)].start);}
 story.chapterButtons=chapters.map((chapter,i)=>{const button=document.createElement('button');button.setAttribute('aria-label',`${ui.capitulo(i+1)}: ${chapter.name}`);button.title=chapter.name;button.onclick=()=>seekStory(chapter.start);$('#story-chapters').append(button);return button;});
@@ -240,7 +254,7 @@ document.addEventListener('keydown',e=>{if($('#source-dialog').open)return;if(e.
 document.addEventListener('visibilitychange',()=>{story.clock.resetVisibility();syncNarration();});
 $('#source-content').innerHTML=sourceHTML;$('#sources').onclick=()=>{story.resumeAfterDialog=story.active&&story.clock.playing;if(story.resumeAfterDialog)pauseStory();$('#source-dialog').showModal();};$('#close-sources').onclick=()=>$('#source-dialog').close();$('#source-dialog').addEventListener('close',()=>{if(story.resumeAfterDialog&&story.active){story.clock.play(performance.now());updateStoryTransport();}story.resumeAfterDialog=false;syncNarration();});
 try{const loader=new GLTFLoader(),[assets,data]=await Promise.all([Promise.all(['spatial-original','spatial-deepseek','detail_kit'].map(n=>loader.loadAsync('./assets/'+n+'.glb?review=6'))),fetch('./assets/spatial-data.json?review=6').then(r=>r.json())]);kit=assets[2].scene;cubeGeometry=kit.getObjectByName('cache_unit').geometry;tokenGeometry=kit.getObjectByName('token_unit').geometry;
- for(const [i,v] of views.entries()){v.root=assets[i].scene;v.data=data[i];v.world.add(v.root);v.wires=[];v.root.traverse(o=>{if(o.isMesh){if(/^(wire_|arrow_|repeat_)/.test(o.name))v.wires.push(o);o.material=o.material.clone();o.material.transparent=true;o.material.opacity=o.name.startsWith('repeat_')?.2:1;o.material.depthWrite=true;o.userData.initialOpacity=o.material.opacity}});for(const n of v.data.nodes){if(n.part&&(n.kind==='box'||['kv_label','residual_input'].includes(n.id)||n.kind==='position'||n.part==='head'))v.components.push(makeInterior(v,n));else if(n.label)addLabel(v,n.id.endsWith('position_label')?ui.posicion:etiquetaPlana(v.side,n),[n.x,n.y,1.5],n.part?'component':'small',n.part?()=>focus(v,n):null)}for(const f of v.data.frames)addLabel(v,marco(f.label),[f.tx,f.ty,-.2],'small');v.flow=new THREE.InstancedMesh(tokenGeometry,new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,toneMapped:false}),1024);v.flow.frustumCulled=false;v.flow.renderOrder=4;v.scene.add(v.flow)}state.ready=true;$('#loading').hidden=true;$('#story-toggle').disabled=false;narration.el.preload='auto';narration.el.load();resize();updatePlay();
+ for(const [i,v] of views.entries()){v.root=assets[i].scene;v.data=data[i];v.world.add(v.root);v.wires=[];v.root.traverse(o=>{if(o.isMesh){if(/^(wire_|arrow_|repeat_)/.test(o.name))v.wires.push(o);o.material=o.material.clone();o.material.transparent=true;o.material.opacity=o.name.startsWith('repeat_')?.2:1;o.material.depthWrite=true;o.userData.initialOpacity=o.material.opacity}});for(const n of v.data.nodes){if(n.part&&(n.kind==='box'||['kv_label','residual_input'].includes(n.id)||n.kind==='position'||n.part==='head'))v.components.push(makeInterior(v,n));else if(n.label)addLabel(v,n.id.endsWith('position_label')?ui.posicion:etiquetaPlana(v.side,n),[n.x,n.y,1.5],n.part?'component':'small',n.part?()=>focus(v,n):null)}for(const f of v.data.frames)addLabel(v,marco(f.label),[f.tx,f.ty,-.2],'small');v.flow=new THREE.InstancedMesh(tokenGeometry,new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,toneMapped:false}),1024);v.flow.frustumCulled=false;v.flow.renderOrder=4;v.scene.add(v.flow)}state.ready=true;$('#loading').hidden=true;$('#story-toggle').disabled=false;preloadNarration();resize();updatePlay();
 }catch(e){console.error(e);$('#loading').textContent=ui.error;state.error=String(e)}
 let before=performance.now();function frame(now){const dt=Math.max(0,Math.min(.08,(now-before)/1000));before=now;if(state.ready){if(story.active){const p=story.clock.tick(now,!document.hidden);if(story.cueKey!==`${p.index}:${p.cueIndex}`)applyStoryCue(p);updateStoryCamera(now);updateStoryTransport(p);syncNarration();}if((story.active?story.clock.playing:state.playing)&&!document.hidden)state.time+=dt*(story.active?1:state.pace);
  if(transition){const t=Math.min(1,(now-transition.time)/1000),s=t*t*(3-2*t);syncing=true;views.forEach((v,i)=>{v.controls.target.lerpVectors(transition.starts[i].t,transition.targets[i],s);v.camera.position.lerpVectors(transition.starts[i].p,transition.targets[i].clone().add(transition.offsets[i]),s);v.controls.update()});syncing=false;if(t===1)transition=null}
