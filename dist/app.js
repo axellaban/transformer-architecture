@@ -191,19 +191,12 @@ function updateStoryTransport(position=storyPosition(story.clock.time)){
 // historia, así que basta con seguir el reloj: cada capítulo empieza en su segundo.
 const narration={el:new Audio(),on:true,failed:false,source:'./assets/narracion-es.mp3?v=b6a3a6591751'};
 try{narration.on=localStorage.getItem('narracion')!=='off'}catch{}
-narration.el.preload='none';narration.el.src=narration.source;
-if('preservesPitch' in narration.el)narration.el.preservesPitch=true;
+narration.el.preload='auto';narration.el.src=narration.source;
 narration.el.addEventListener('error',()=>{narration.failed=true;updateNarrationButton()});
-// Safari en iOS ignora preload y descarga la pista mientras suena, así que un tirón
-// de red la corta a mitad de frase. Se baja entera una vez y se reproduce de memoria.
-async function preloadNarration(){
- try{
-  const response=await fetch(narration.source);
-  if(!response.ok)return;
-  const url=URL.createObjectURL(await response.blob());
-  if(!story.active){narration.el.src=url;narration.el.load();}
- }catch{}
-}
+// Deja la pista en la caché del navegador antes de que empiece la historia. No se
+// toca el src: en iOS reproducir desde blob: y desde memoria da problemas, así que
+// el elemento usa siempre la URL normal.
+function preloadNarration(){fetch(narration.source).catch(()=>{});}
 function updateNarrationButton(){
  const button=$('#story-audio'),active=narration.on&&!narration.failed;
  const label=narration.failed?ui.narracionNoDisponible:active?ui.narracionSilenciar:ui.narracionActivar;
@@ -213,15 +206,15 @@ function updateNarrationButton(){
 function syncNarration(reposition=false){
  const el=narration.el;if(narration.failed)return;
  if(!story.active||!narration.on){if(!el.paused)el.pause();return;}
- // Solo se reposiciona en los saltos explícitos: en iOS cada búsqueda interrumpe el
- // sonido, así que la deriva pequeña se corrige estirando un poco la velocidad.
- const drift=story.clock.time-el.currentTime;
- if(reposition||Math.abs(drift)>1){el.playbackRate=1;try{el.currentTime=story.clock.time}catch{}}
- else el.playbackRate=Math.min(1.05,Math.max(.95,1+drift*.5));
+ // La pista suena libre: el reloj de la historia y el del audio miden el mismo tiempo
+ // real, así que en un minuto no se separan de forma audible. Solo se reposiciona en
+ // los saltos explícitos, o si algo la dejó muy atrás, porque cada cambio de posición
+ // o de velocidad interrumpe el sonido en iOS.
+ if(reposition||Math.abs(story.clock.time-el.currentTime)>1.5){try{el.currentTime=story.clock.time}catch{}}
  const play=story.clock.playing&&!document.hidden&&!$('#source-dialog').open;
  if(play&&el.paused)el.play().catch(()=>{});else if(!play&&!el.paused)el.pause();
 }
-function stopNarration(){if(narration.failed)return;narration.el.pause();narration.el.playbackRate=1;try{narration.el.currentTime=0}catch{}}
+function stopNarration(){if(narration.failed)return;narration.el.pause();try{narration.el.currentTime=0}catch{}}
 function toggleNarration(){
  narration.on=!narration.on;try{localStorage.setItem('narracion',narration.on?'on':'off')}catch{}
  updateNarrationButton();syncNarration(true);

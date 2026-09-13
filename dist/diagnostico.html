@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Diagnóstico de la narración</title>
+<style>
+:root{color-scheme:dark}
+body{margin:0;padding:18px;background:#0b131e;color:#e4edf3;font:15px/1.5 system-ui,sans-serif}
+h1{font-size:19px;margin:0 0 4px}
+p.sub{margin:0 0 18px;color:#8fa5b6;font-size:13px}
+button{width:100%;min-height:52px;margin-bottom:10px;border:1px solid #4b6d74;border-radius:10px;
+  background:#1a3039;color:#b7e9e0;font:600 16px system-ui,sans-serif}
+button.sec{background:transparent;color:#a8bfcf;border-color:#2c4356;min-height:44px;font-weight:400}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}
+td{padding:5px 0;border-bottom:1px solid #22354a;vertical-align:top}
+td:first-child{color:#8fa5b6;width:42%}
+td:last-child{font-family:ui-monospace,monospace;word-break:break-all}
+#log{background:#0e1b27;border:1px solid #22354a;border-radius:8px;padding:10px;height:210px;
+  overflow:auto;font:12px/1.45 ui-monospace,monospace;white-space:pre-wrap}
+.mal{color:#ef7d80}.bien{color:#65d9ce}
+</style>
+</head>
+<body>
+<h1>Diagnóstico de la narración</h1>
+<p class="sub">Pulsa Reproducir, deja correr un minuto y mándame una captura de todo.</p>
+<button id="play">▶︎ Reproducir 60 s</button>
+<button id="stop" class="sec">Detener</button>
+<button id="copy" class="sec">Copiar el informe</button>
+<table id="info"></table>
+<div id="log"></div>
+<script>
+const audio=new Audio(), started=[], log=[], t0=performance.now();
+const SRC='./assets/narracion-es.mp3?v=b6a3a6591751';
+audio.preload='auto'; audio.src=SRC;
+const el=id=>document.getElementById(id);
+const stamp=()=>((performance.now()-t0)/1000).toFixed(2).padStart(6);
+function add(line,cls){log.unshift(`${stamp()}  ${line}`);el('log').innerHTML=
+  log.slice(0,120).map(l=>`<span class="${cls||''}">${l}</span>`).join('\n');}
+for(const e of ['loadstart','loadedmetadata','canplay','canplaythrough','play','playing','pause',
+                'waiting','stalled','suspend','seeking','seeked','ratechange','ended','error','abort','emptied'])
+  audio.addEventListener(e,()=>add(e, e==='waiting'||e==='stalled'||e==='error'?'mal':''));
+
+let clock=null, startedAt=0;
+function ranges(){const b=audio.buffered,out=[];for(let i=0;i<b.length;i++)
+  out.push(`${b.start(i).toFixed(1)}-${b.end(i).toFixed(1)}`);return out.join(' ')||'—';}
+function refresh(){
+  const reloj=clock?((performance.now()-startedAt)/1000):0;
+  const deriva=clock?(reloj-audio.currentTime):0;
+  const filas=[
+    ['audio.currentTime', audio.currentTime.toFixed(2)],
+    ['reloj de pared', reloj.toFixed(2)],
+    ['deriva (reloj − audio)', deriva.toFixed(2)+' s'],
+    ['pausado', String(audio.paused)],
+    ['readyState', audio.readyState+' /4'],
+    ['networkState', audio.networkState],
+    ['duración', isFinite(audio.duration)?audio.duration.toFixed(2):'—'],
+    ['buffer descargado', ranges()],
+    ['playbackRate', audio.playbackRate],
+    ['volumen · silenciado', audio.volume+' · '+audio.muted],
+    ['veces "waiting"', log.filter(l=>l.includes('waiting')).length],
+    ['veces "stalled"', log.filter(l=>l.includes('stalled')).length],
+    ['error', audio.error?audio.error.code+' '+(audio.error.message||''):'ninguno'],
+    ['URL', new URL(SRC,location.href).pathname+new URL(SRC,location.href).search],
+    ['navegador', navigator.userAgent],
+    ['conexión', (navigator.connection&&navigator.connection.effectiveType)||'—'],
+  ];
+  el('info').innerHTML=filas.map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('');
+}
+el('play').onclick=()=>{audio.currentTime=0;startedAt=performance.now();
+  audio.play().then(()=>add('play() aceptado','bien')).catch(e=>add('play() RECHAZADO: '+e,'mal'));
+  clock=clock||setInterval(refresh,250);};
+el('stop').onclick=()=>{audio.pause();};
+el('copy').onclick=async()=>{
+  const texto=[...document.querySelectorAll('#info tr')].map(r=>r.cells[0].textContent+': '+r.cells[1].textContent).join('\n')
+    +'\n\n--- eventos ---\n'+log.slice().reverse().join('\n');
+  try{await navigator.clipboard.writeText(texto);el('copy').textContent='Copiado ✓';}
+  catch{el('log').textContent=texto;}
+};
+fetch(SRC,{method:'HEAD'}).then(r=>add('HEAD '+r.status+' · type='+r.headers.get('content-type')
+  +' · largo='+r.headers.get('content-length')+' · caché='+r.headers.get('cache-control'),'bien'))
+  .catch(e=>add('HEAD falló: '+e,'mal'));
+refresh(); setInterval(refresh,500);
+</script>
+</body>
+</html>

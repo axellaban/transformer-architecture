@@ -49,6 +49,14 @@ Se mantienen en inglés los nombres propios del artículo o del modelo y los té
 
 Los números siguen la convención de `es-ES`, la misma que produce `toLocaleString('es-ES')` en la aplicación: sin separador hasta cuatro cifras (2048, 5120) y con punto a partir de cinco (16.384, 129.280).
 
+## Diagnóstico de audio
+
+`dist/diagnostico.html` (en producción, `/diagnostico`) reproduce la misma pista fuera de la aplicación y
+muestra el estado del elemento de audio: posición, deriva contra el reloj de pared, `readyState`, tramos
+descargados, errores y el registro de eventos (`waiting`, `stalled`, `seeking`…), además de las cabeceras con
+las que responde el servidor. Sirve para separar un problema del archivo o de la red de uno de la lógica de
+reproducción, sobre todo en móviles, donde no hay consola a mano.
+
 ## Comprobaciones
 
 Con Node.js 22 o posterior instalado:
